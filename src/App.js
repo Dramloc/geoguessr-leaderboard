@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+/** @jsxImportSource @emotion/react */
+import { lazy, Suspense } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "twin.macro";
+import { GlobalStyles } from "twin.macro";
+import { Layout } from "./shared/Layout";
 
-function App() {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
+const HomeScreen = lazy(() => import("./home/HomeScreen"));
+
+export const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyles />
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Layout>
+            <Suspense fallback={null}>
+              <Switch>
+                <Route path="/" exact component={HomeScreen} />
+              </Switch>
+            </Suspense>
+          </Layout>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </>
   );
-}
+};
 
 export default App;
