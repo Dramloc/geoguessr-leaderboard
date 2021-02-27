@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { useAuth0 } from "@auth0/auth0-react";
 import { Global } from "@emotion/react";
 import { Link, NavLink } from "react-router-dom";
 import "twin.macro";
@@ -42,7 +43,7 @@ const SearchBar = () => {
 const MobileMenuLink = ({ as: Component = Link, ...props }) => {
   return (
     <Component
-      tw="block rounded-md py-2 px-3 text-base font-medium"
+      tw="block w-full text-left rounded-md py-2 px-3 text-base font-medium"
       css={[
         // Light mode
         tw`(text-gray-900 hover:(bg-gray-50))`,
@@ -59,6 +60,7 @@ const MobileMenuLink = ({ as: Component = Link, ...props }) => {
 };
 
 const MobileMenu = (props) => {
+  const { isAuthenticated, user, logout } = useAuth0();
   return (
     <nav tw="lg:hidden" aria-label="Global" {...props}>
       <div tw="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
@@ -69,34 +71,38 @@ const MobileMenu = (props) => {
           Leaderboard
         </MobileMenuLink>
       </div>
-      <div tw="border-t border-gray-200 dark:(border-gray-600) pt-4 pb-3">
-        <div tw="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
-          <div tw="flex-shrink-0">
-            <img
-              tw="h-10 w-10 rounded-full"
-              src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt=""
-            />
-          </div>
-          <div tw="ml-3">
-            <div tw="text-base font-medium text-gray-800 dark:(text-white)">
-              Chelsea Hagon
+      {isAuthenticated && (
+        <div tw="border-t border-gray-200 dark:(border-gray-600) pt-4 pb-3">
+          <div tw="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
+            <div tw="flex-shrink-0">
+              <img tw="h-10 w-10 rounded-full" src={user.picture} alt="" />
             </div>
-            <div tw="text-sm font-medium text-gray-500 dark:(text-gray-400)">
-              chelseahagon@example.com
+            <div tw="ml-3">
+              <div tw="text-base font-medium text-gray-800 dark:(text-white)">
+                {user.name}
+              </div>
+              <div tw="text-sm font-medium text-gray-500 dark:(text-gray-400)">
+                {user.email}
+              </div>
             </div>
           </div>
+          <div tw="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
+            <MobileMenuLink
+              as="button"
+              onClick={() => logout({ returnTo: window.location.origin })}
+            >
+              Sign out
+            </MobileMenuLink>
+          </div>
         </div>
-        <div tw="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
-          <MobileMenuLink to="/sign-out">Sign out</MobileMenuLink>
-        </div>
-      </div>
+      )}
     </nav>
   );
 };
 
 const Header = () => {
   const { isOpen, onToggle } = useDisclosure(false);
+  const { isAuthenticated, user } = useAuth0();
   return (
     <>
       {/* When the mobile menu is open, add `overflow-hidden` to the `body` element to prevent double scrollbars */}
@@ -152,8 +158,8 @@ const Header = () => {
             </div>
             <div tw="hidden lg:(flex items-center justify-end) xl:(col-span-4)">
               {/* Profile dropdown */}
-              <div tw="flex-shrink-0 relative ml-5">
-                <div>
+              {isAuthenticated && (
+                <div tw="flex-shrink-0 relative ml-5">
                   <button
                     type="button"
                     tw="rounded-full flex"
@@ -163,14 +169,10 @@ const Header = () => {
                     ]}
                   >
                     <span tw="sr-only">Open user menu</span>
-                    <img
-                      tw="h-8 w-8 rounded-full"
-                      src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
+                    <img tw="h-8 w-8 rounded-full" src={user.picture} alt="" />
                   </button>
                 </div>
-              </div>
+              )}
               <Link
                 to="/g/new"
                 tw="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm"
