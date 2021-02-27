@@ -43,10 +43,8 @@ export const MovementSettingDescription: {
 export type Game = {
   _id?: string;
   rounds: number;
-  duration: {
-    minimum: number;
-    maximum: number;
-  };
+  minimumDuration: number;
+  maximumDuration: number;
   movementSettings: MovementSetting[];
 };
 
@@ -55,7 +53,7 @@ export const useCreateGameMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<Game, unknown, Game>(
     async (json) => {
-      return api.post(`games`, { json }).json();
+      return api.post(`v1/games`, { json }).json();
     },
     {
       onSuccess: () => {

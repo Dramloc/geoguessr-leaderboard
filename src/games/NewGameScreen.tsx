@@ -22,7 +22,8 @@ type FormattedDuration = `${string}:${string}`;
 
 type NewGameFormProps = {
   rounds: number;
-  duration: { minimum: FormattedDuration; maximum: FormattedDuration };
+  minimumDuration: FormattedDuration;
+  maximumDuration: FormattedDuration;
   movementSettings: { [key in MovementSetting]: boolean };
 };
 
@@ -51,19 +52,17 @@ const NewGameScreen = () => {
 
     // Format durations
     const minimumDuration = convertFormattedDurationToSeconds(
-      data.duration.minimum
+      data.minimumDuration
     );
     const maximumDuration = convertFormattedDurationToSeconds(
-      data.duration.maximum
+      data.maximumDuration
     );
 
     // Create API payload
     const game = {
       rounds: data.rounds,
-      duration: {
-        minimum: minimumDuration,
-        maximum: maximumDuration,
-      },
+      minimumDuration,
+      maximumDuration,
       movementSettings,
     };
 
@@ -105,7 +104,7 @@ const NewGameScreen = () => {
                   <FormGroup tw="w-1/2 flex-1 min-w-0">
                     <Label tw="sr-only">Minimum</Label>
                     <Input
-                      name="duration.minimum"
+                      name="minimumDuration"
                       defaultValue="00:40"
                       pattern="\d\d:\d\d"
                       required
@@ -116,7 +115,7 @@ const NewGameScreen = () => {
                   <FormGroup tw="flex-1 min-w-0">
                     <Label tw="sr-only">Maximum</Label>
                     <Input
-                      name="duration.maximum"
+                      name="maximumDuration"
                       defaultValue="05:00"
                       pattern="\d\d:\d\d"
                       required

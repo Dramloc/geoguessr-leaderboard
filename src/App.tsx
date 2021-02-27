@@ -31,6 +31,7 @@ export const App = () => {
           domain="geoguessr-leaderboard.us.auth0.com"
           clientId="Vu8E5T6HTFZt9hfmmSvvM7QAZJ135vW3"
           redirectUri={window.location.origin}
+          audience="https://geoguessr-leaderboard-api.vercel.app/"
         >
           <BrowserRouter>
             <Layout>
