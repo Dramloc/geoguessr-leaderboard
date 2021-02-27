@@ -1,4 +1,8 @@
-export const SearchSolidIcon = (props) => {
+import { SVGProps } from "react";
+
+export type Icon = React.FC<SVGProps<SVGSVGElement>>;
+
+export const SearchSolidIcon: Icon = (props) => {
   return (
     <svg
       fill="currentColor"
@@ -16,7 +20,7 @@ export const SearchSolidIcon = (props) => {
   );
 };
 
-export const XOutlineIcon = (props) => {
+export const XOutlineIcon: Icon = (props) => {
   return (
     <svg
       fill="none"
@@ -36,7 +40,7 @@ export const XOutlineIcon = (props) => {
   );
 };
 
-export const MenuOutlineIcon = (props) => {
+export const MenuOutlineIcon: Icon = (props) => {
   return (
     <svg
       fill="none"
@@ -56,7 +60,7 @@ export const MenuOutlineIcon = (props) => {
   );
 };
 
-export const HomeOutlineIcon = (props) => {
+export const HomeOutlineIcon: Icon = (props) => {
   return (
     <svg
       fill="none"
@@ -76,7 +80,7 @@ export const HomeOutlineIcon = (props) => {
   );
 };
 
-export const TrendingUpOutlineIcon = (props) => {
+export const TrendingUpOutlineIcon: Icon = (props) => {
   return (
     <svg
       fill="none"

@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useAuth0 } from "@auth0/auth0-react";
 import { Global } from "@emotion/react";
+import styled from "@emotion/styled";
+import { HTMLAttributes } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "twin.macro";
 import tw from "twin.macro";
@@ -12,6 +14,7 @@ import {
   XOutlineIcon,
 } from "./Icons";
 import { Logo } from "./Logo";
+import { PrimaryButtonLink } from "./PrimaryButton";
 import { useDisclosure } from "./useDisclosure";
 
 const SearchBar = () => {
@@ -29,8 +32,8 @@ const SearchBar = () => {
           name="search"
           tw="block w-full border rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:(outline-none ring-1 placeholder-gray-400) sm:text-sm"
           css={[
-            tw`(bg-white border-gray-300 focus:(text-gray-900 ring-primary-500 border-primary-500))`,
-            tw`dark:(bg-gray-900 border-gray-700 focus:(text-white ring-gray-500 border-gray-500))`,
+            tw`(bg-white text-gray-900 border-gray-300 focus:(ring-primary-500 border-primary-500))`,
+            tw`dark:(bg-gray-900 text-white border-gray-700 focus:(ring-gray-500 border-gray-500))`,
           ]}
           placeholder="Search"
           type="search"
@@ -40,36 +43,35 @@ const SearchBar = () => {
   );
 };
 
-const MobileMenuLink = ({ as: Component = Link, ...props }) => {
-  return (
-    <Component
-      tw="block w-full text-left rounded-md py-2 px-3 text-base font-medium"
-      css={[
-        // Light mode
-        tw`(text-gray-900 hover:(bg-gray-50))`,
-        { "&.active": tw`(bg-gray-100 text-gray-900 hover:(bg-gray-100))` },
-        // Dark mode
-        tw`dark:(text-white hover:(bg-gray-700))`,
-        {
-          "&.active": tw`dark:(bg-gray-600 text-white hover:(bg-gray-600))`,
-        },
-      ]}
-      {...props}
-    />
-  );
-};
+const MobileMenuButton = styled("button")(
+  tw`block w-full text-left rounded-md py-2 px-3 text-base font-medium`,
+  tw`(text-gray-900 hover:(bg-gray-50))`,
+  tw`dark:(text-white hover:(bg-gray-700))`
+);
 
-const MobileMenu = (props) => {
+const MobileMenuNavLink = styled(NavLink)(
+  tw`block rounded-md py-2 px-3 text-base font-medium`,
+  // Light mode
+  tw`(text-gray-900 hover:(bg-gray-50))`,
+  { "&.active": tw`(bg-gray-100 text-gray-900 hover:(bg-gray-100))` },
+  // Dark mode
+  tw`dark:(text-white hover:(bg-gray-700))`,
+  {
+    "&.active": tw`dark:(bg-gray-600 text-white hover:(bg-gray-600))`,
+  }
+);
+
+const MobileMenu: React.FC<HTMLAttributes<HTMLDivElement>> = (props) => {
   const { isAuthenticated, user, logout } = useAuth0();
   return (
     <nav tw="lg:hidden" aria-label="Global" {...props}>
       <div tw="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
-        <MobileMenuLink as={NavLink} to="/" exact>
+        <MobileMenuNavLink to="/" exact>
           Home
-        </MobileMenuLink>
-        <MobileMenuLink as={NavLink} to="/leaderboard" exact>
+        </MobileMenuNavLink>
+        <MobileMenuNavLink to="/leaderboard" exact>
           Leaderboard
-        </MobileMenuLink>
+        </MobileMenuNavLink>
       </div>
       {isAuthenticated && (
         <div tw="border-t border-gray-200 dark:(border-gray-600) pt-4 pb-3">
@@ -87,12 +89,11 @@ const MobileMenu = (props) => {
             </div>
           </div>
           <div tw="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
-            <MobileMenuLink
-              as="button"
+            <MobileMenuButton
               onClick={() => logout({ returnTo: window.location.origin })}
             >
               Sign out
-            </MobileMenuLink>
+            </MobileMenuButton>
           </div>
         </div>
       )}
@@ -100,7 +101,7 @@ const MobileMenu = (props) => {
   );
 };
 
-const Header = () => {
+const Header: React.FC<HTMLAttributes<HTMLDivElement>> = (props) => {
   const { isOpen, onToggle } = useDisclosure(false);
   const { isAuthenticated, user } = useAuth0();
   return (
@@ -115,6 +116,7 @@ const Header = () => {
           tw`lg:(static overflow-y-visible)`,
           isOpen && tw`fixed inset-0 z-40 overflow-y-auto`,
         ]}
+        {...props}
       >
         <div tw="max-w-7xl mx-auto px-4 sm:(px-6) lg:(px-8)">
           <div tw="relative flex justify-between xl:(grid grid-cols-12) lg:(gap-8)">
@@ -173,16 +175,9 @@ const Header = () => {
                   </button>
                 </div>
               )}
-              <Link
-                to="/g/new"
-                tw="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm"
-                css={[
-                  tw`(text-white bg-primary-600 hover:(bg-primary-700) focus:(outline-none ring-2 ring-offset-2 ring-primary-500))`,
-                  tw`(text-white bg-primary-500 hover:(bg-primary-600) focus:(outline-none ring-2 ring-offset-2 ring-primary-500 ring-offset-gray-800))`,
-                ]}
-              >
-                New Game
-              </Link>
+              <PrimaryButtonLink to="/g/new" tw="ml-6">
+                New game
+              </PrimaryButtonLink>
             </div>
           </div>
         </div>
@@ -193,28 +188,22 @@ const Header = () => {
   );
 };
 
-const SidebarLink = ({ as: Component = Link, ...props }) => {
-  return (
-    <NavLink
-      tw="flex items-center px-3 py-2 text-sm font-medium rounded-md svg:(flex-shrink-0 -ml-1 mr-3 h-6 w-6)"
-      css={[
-        // Light mode
-        tw`(text-gray-600 hover:(bg-gray-50) svg:(text-gray-400))`,
-        {
-          "&.active": tw`(bg-gray-200 hover:(bg-gray-200) text-gray-900 svg:(text-gray-500))`,
-        },
-        // Dark mode
-        tw`dark:(text-gray-400 hover:(bg-gray-800) svg:(text-gray-500))`,
-        {
-          "&.active": tw`dark:(bg-gray-700 hover:(bg-gray-700) text-white svg:(text-white))`,
-        },
-      ]}
-      {...props}
-    />
-  );
-};
+const SidebarNavLink = styled(NavLink)(
+  tw`flex items-center px-3 py-2 text-sm font-medium rounded-md`,
+  tw`svg:(flex-shrink-0 -ml-1 mr-3 h-6 w-6)`,
+  // Light mode
+  tw`(text-gray-600 hover:(bg-gray-50) svg:(text-gray-400))`,
+  {
+    "&.active": tw`(bg-gray-200 hover:(bg-gray-200) text-gray-900 svg:(text-gray-500))`,
+  },
+  // Dark mode
+  tw`dark:(text-gray-400 hover:(bg-gray-800) svg:(text-gray-500))`,
+  {
+    "&.active": tw`dark:(bg-gray-700 hover:(bg-gray-700) text-white svg:(text-white))`,
+  }
+);
 
-const Sidebar = (props) => {
+const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = (props) => {
   return (
     <nav
       aria-label="Sidebar"
@@ -222,22 +211,22 @@ const Sidebar = (props) => {
       {...props}
     >
       <div tw="pb-8 space-y-1">
-        <SidebarLink as={NavLink} to="/" exact>
+        <SidebarNavLink to="/" exact>
           <HomeOutlineIcon />
           <span tw="truncate">Home</span>
-        </SidebarLink>
-        <SidebarLink as={NavLink} to="/leaderboard" exact>
+        </SidebarNavLink>
+        <SidebarNavLink to="/leaderboard" exact>
           <TrendingUpOutlineIcon />
           <span tw="truncate">Leaderboard</span>
-        </SidebarLink>
+        </SidebarNavLink>
       </div>
     </nav>
   );
 };
 
-export const Layout = ({ children }) => {
+export const Layout: React.FC<{}> = ({ children }) => {
   return (
-    <div tw="min-h-screen" css={[tw`(bg-gray-100)`, tw`dark:(bg-gray-900)`]}>
+    <div css={[tw`min-h-screen`, tw`(bg-gray-100)`, tw`dark:(bg-gray-900)`]}>
       <Header />
       <div tw="max-w-3xl mx-auto py-10 sm:(px-6) lg:(max-w-7xl px-8 grid grid-cols-12 gap-8)">
         <Sidebar tw="hidden lg:(block col-span-3 col-span-2)" />

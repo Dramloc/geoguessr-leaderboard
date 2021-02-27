@@ -18,6 +18,9 @@ const queryClient = new QueryClient({
 const HomeScreen = withAuthenticationRequired(
   lazy(() => import("./home/HomeScreen"))
 );
+const NewGameScreen = withAuthenticationRequired(
+  lazy(() => import("./games/NewGameScreen"))
+);
 
 export const App = () => {
   return (
@@ -34,6 +37,7 @@ export const App = () => {
               <Suspense fallback={null}>
                 <Switch>
                   <Route path="/" exact component={HomeScreen} />
+                  <Route path="/g/new" exact component={NewGameScreen} />
                 </Switch>
               </Suspense>
             </Layout>
